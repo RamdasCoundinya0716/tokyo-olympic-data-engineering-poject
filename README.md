@@ -7,11 +7,27 @@ This PySpark script processes Tokyo Olympic data stored in Azure Data Lake Stora
 - The script mounts the Azure Data Lake Storage using the provided configurations, allowing seamless access to the Olympic data.
 
 ```python
-# Azure Data Lake Storage Mounting
+# Initialize Variables
+container_name = "enter_your_container_name_here"
+storage_account_name = "enter_your_storage_account_name_here"
+tenant_id = "enter_your_tenant_id_here"
+client_id = "enter_your_client_id_here"
+client_secret = "enter_your_client_secret_here"
+
+# Azure Data Lake Storage Mounting Configuration
+configs = {
+    "fs.azure.account.auth.type": "OAuth",
+    "fs.azure.account.oauth.provider.type": "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider",
+    "fs.azure.account.oauth2.client.id": client_id,
+    "fs.azure.account.oauth2.client.secret": client_secret,
+    "fs.azure.account.oauth2.client.endpoint": f"https://login.microsoftonline.com/{tenant_id}/oauth2/token"
+}
+
+# Mount Azure Data Lake Storage
 dbutils.fs.mount(
-  source="abfss://tokyo-olympic-data@tokyoolympicdata.dfs.core.windows.net",
-  mount_point="/mnt/tokyoolymic",
-  extra_configs=configs
+    source=f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net",
+    mount_point="/mnt/tokyoolymic",
+    extra_configs=configs
 )
 ```
 
